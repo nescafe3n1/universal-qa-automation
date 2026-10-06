@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nes-dev-qa"
+dynamic = ["version"]
+description = "Scans a website with Playwright, then writes and runs a tailored pytest E2E + API test suite for it."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+    "playwright>=1.49",
+    "pytest>=8.0",
+    "pytest-playwright>=0.5",
+    "tomli>=2.0; python_version < '3.11'",   # reads nes-qa.toml (built into Python 3.11 and newer)
+]
+
+[project.scripts]
+nes-qa = "qa_generator.launcher:main"
+run-playwright = "qa_generator.cli:main"
+
+[tool.setuptools]
+# The unfinished web agent (qa_generator.server) is deliberately not packaged.
+packages = [
+    "qa_generator",
+    "qa_generator.generator",
+    "qa_generator.scanner",
+    "qa_generator.templates",
+]
+
+[tool.setuptools.package-data]
+qa_generator = ["legal/*.md", "templates/*.js"]
+
+[tool.setuptools.dynamic]
+version = { attr = "qa_generator.__version__" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra"
+markers = [
+    "integration: needs a Chromium browser and starts a small local test website (slower, several minutes)",
+]

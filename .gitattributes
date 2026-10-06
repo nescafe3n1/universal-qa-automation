@@ -1,0 +1,5 @@
+* text=auto
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+# Bundled third-party file: never rewrite it
+qa_generator/templates/axe.min.js -text
